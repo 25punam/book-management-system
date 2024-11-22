@@ -8,6 +8,12 @@ from rest_framework.views import APIView
 from django.utils.timezone import now
 
 class BookListView(APIView):
+    """
+    View for listing all books and adding a new book.
+
+    GET: Retrieves a list of books. Optionally filter by availability using the 'available' query parameter.
+    POST: Creates a new book entry with the data provided in the request body.
+    """
     def get(self, request):
         available = request.GET.get('available')
         if available is not None:
@@ -18,6 +24,12 @@ class BookListView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
+        """
+        Creates a new book in the database.
+        
+        If the provided data is valid, it saves the book and returns a 201 Created response.
+        Otherwise, returns a 400 Bad Request with the validation errors.
+        """
         serializer = BookSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -26,6 +38,12 @@ class BookListView(APIView):
 
 
 class BorrowBookView(APIView):
+    """
+    View for borrowing a book.
+
+    POST: Allows a borrower to borrow a book, updating the availability of the book and
+    incrementing the borrow count. It also checks the borrower's status and borrowing limit.
+    """
     def post(self, request):
         book_id = request.data.get('book_id')
         borrower_id = request.data.get('borrower_id')
@@ -59,6 +77,12 @@ class BorrowBookView(APIView):
 
 
 class ReturnBookView(APIView):
+    """
+    View for returning a borrowed book.
+
+    POST: Updates the loan record when a book is returned. Marks the book as available again and sets the
+    loan's return status to True.
+    """
     def post(self, request):
         book_id = request.data.get('book_id')
 
@@ -76,6 +100,11 @@ class ReturnBookView(APIView):
 
 
 class BorrowedBooksView(APIView):
+    """
+    View for listing all active borrowed books for a specific borrower.
+
+    GET: Retrieves all books that a borrower currently has out on loan and has not returned yet.
+    """
     def get(self, request, borrower_id):
         borrower = get_object_or_404(Borrower, id=borrower_id)
         loans = Loan.objects.filter(borrower=borrower, is_returned=False)
@@ -84,6 +113,11 @@ class BorrowedBooksView(APIView):
 
 
 class BorrowerHistoryView(APIView):
+    """
+    View for listing all borrowed books of a specific borrower, including returned books.
+
+    GET: Retrieves the borrowing history of a borrower, showing both active and returned loans.
+    """
     def get(self, request, borrower_id):
         borrower = get_object_or_404(Borrower, id=borrower_id)
         loans = Loan.objects.filter(borrower=borrower)
