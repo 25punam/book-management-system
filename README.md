@@ -24,6 +24,36 @@ This project is a Django-based API for managing a library's book borrowing syste
 
 #### **Borrow a Book**  
 - **Endpoint**: `POST /borrow/`  
-  Borrow a book using `book_id` and `borrower_id`. This updates the book's availability and increments its borrow count.  
+  Borrow a book using `book_id` and `borrower_id`. This updates the book's availability and increments its borrow count.
+
+
+## API Documentation
+
+### Endpoints Overview
+
+#### Book Management
+
+| Method | Endpoint   | Description           |
+|--------|------------|-----------------------|
+| POST   | /books/    | Add a new book        |
+| GET    | /books/    | List all books        |
+
+#### Borrowing and Returning
+
+| Method | Endpoint   | Description           |
+|--------|------------|-----------------------|
+| POST   | /borrow/   | Borrow a book         |
+| POST   | /return/   | Return a book         |
+
+#### Borrower History and Active Loans
+
+| Method | Endpoint               | Description                     |
+|--------|------------------------|---------------------------------|
+| GET    | /borrowed/<borrower_id>/| List active (unreturned) loans |
+| GET    | /history/<borrower_id>/ | List all books ever borrowed   |
+
+
+
+  
 
 
